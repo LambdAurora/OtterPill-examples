@@ -1,0 +1,9 @@
+[submodule "cmake"]
+	path = cmake
+	url = git@github.com:LambdAurora/lcmm.git
+[submodule "lib/libopencm3"]
+	path = lib/libopencm3
+	url = git@github.com:libopencm3/libopencm3.git
+[submodule "lib/STM32CubeF0"]
+	path = lib/STM32CubeF0
+	url = git@github.com:STMicroelectronics/STM32CubeF0.git
