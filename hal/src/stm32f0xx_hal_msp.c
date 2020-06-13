@@ -1,84 +1,54 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * File Name          : stm32f0xx_hal_msp.c
-  * Description        : This file provides code for the MSP Initialization 
-  *                      and de-Initialization codes.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
+// Copyright 2020 the public domain. All rights reserved.
 
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
-/* USER CODE BEGIN Includes */
 
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN TD */
-
-/* USER CODE END TD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN Define */
- 
-/* USER CODE END Define */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN Macro */
-
-/* USER CODE END Macro */
-
-/* Private variables ---------------------------------------------------------*/
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* External functions --------------------------------------------------------*/
-/* USER CODE BEGIN ExternalFunctions */
-
-/* USER CODE END ExternalFunctions */
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 /**
-  * Initializes the Global MSP.
-  */
+ * Initializes the Global MSP.
+ */
 void HAL_MspInit(void)
 {
-  /* USER CODE BEGIN MspInit 0 */
-
-  /* USER CODE END MspInit 0 */
-
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
-  __HAL_RCC_PWR_CLK_ENABLE();
-
-  /* System interrupt init*/
-
-  /* USER CODE BEGIN MspInit 1 */
-
-  /* USER CODE END MspInit 1 */
+    // Activates clocks.
+    __HAL_RCC_SYSCFG_CLK_ENABLE();
+    __HAL_RCC_PWR_CLK_ENABLE();
 }
 
-/* USER CODE BEGIN 1 */
+/**
+ * Initializes the UART MSP.
+ */
+void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
+    GPIO_InitTypeDef gpio_init_struct;
 
-/* USER CODE END 1 */
+    // Part1: enable clocks.
+    /* Enable GPIO TX/RX clock */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+    /* Enable USART 1 clock */
+    __HAL_RCC_USART1_CLK_ENABLE(); 
+
+    // Part 2: configure GPIO.
+
+    /* UART TX GPIO pin configuration  */
+    gpio_init_struct.Pin       = USART1_TX_PIN;
+    gpio_init_struct.Mode      = GPIO_MODE_AF_PP;
+    gpio_init_struct.Pull      = GPIO_PULLUP;
+    gpio_init_struct.Speed     = GPIO_SPEED_FREQ_HIGH;
+    gpio_init_struct.Alternate = USART1_TX_AF;
+
+    HAL_GPIO_Init(USART1_TX_GPIO_PORT, &gpio_init_struct);
+    
+    /* UART RX GPIO pin configuration  */
+    gpio_init_struct.Pin = USART1_RX_PIN;
+    gpio_init_struct.Alternate = USART1_RX_AF;
+
+    HAL_GPIO_Init(USART1_RX_GPIO_PORT, &gpio_init_struct);
+}
+
+void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
+    // Part 1: Reset peripherals.
+    __HAL_RCC_USART1_FORCE_RESET();
+    __HAL_RCC_USART1_RELEASE_RESET();
+
+    // Part 2: disable peripherals and clocks.
+    HAL_GPIO_DeInit(USART1_TX_GPIO_PORT, USART1_TX_PIN);
+    HAL_GPIO_DeInit(USART1_RX_GPIO_PORT, USART1_RX_PIN);
+}

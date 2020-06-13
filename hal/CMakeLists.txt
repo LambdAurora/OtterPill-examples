@@ -12,6 +12,10 @@ include_directories(include ${STM32CubeF0_INCLUDE_DIRS})
 set(COMMON_SOURCES src/startup_stm32f072xb.s
     src/stm32f0xx_hal_msp.c
     src/stm32f0xx_it.c
-    src/system_stm32f0xx.c)
+    src/system_stm32f0xx.c
+    src/common.c
+    src/serial_print.c)
 
 add_otterpill_executable(hal_blink ${STM32CubeF0_SOURCES} ${COMMON_SOURCES} src/blink.c)
+
+add_otterpill_executable(hal_serial_print ${STM32CubeF0_SOURCES} ${COMMON_SOURCES} src/serial_print_main.c)
